@@ -38,6 +38,20 @@ template ::File.join(node.kafka.config_dir, 'server.properties') do
   end
 end
 
+# TODO: make configurable
+directory '/usr/libexec/kafka' do
+  recursive true
+end
+
+template '/usr/libexec/kafka/check-running' do
+  source 'check-running.erb'
+  owner 'root'
+  group 'root'
+  mode '755'
+  variables({
+  })
+end
+
 template kafka_init_opts[:env_path] do
   source kafka_init_opts.fetch(:env_template, 'env.erb')
   owner 'root'

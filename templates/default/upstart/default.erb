@@ -13,22 +13,15 @@ limit nofile <%= @ulimit %> <%= @ulimit %>
 setuid <%= @user %>
 
 script
-  [ -f /etc/default/<%= @daemon_name %> ] && . /etc/default/<%= @daemon_name %>
+  if [ -f /etc/default/<%= @daemon_name %> ]; then
+    . /etc/default/<%= @daemon_name %>
+  fi
   exec $KAFKA_RUN $KAFKA_ARGS $KAFKA_CONFIG
 end script
 
 post-start script
-  tries=0 max_tries=5 sh="$(which sh)"
   pid="$(status <%= @daemon_name %> | head -1)"
   pid=${pid##* }
-  if [ -n "$pid" ]; then
-    while [ $tries -le $max_tries ]; do
-      if netstat --numeric --listen --programs --tcp 2> /dev/null | grep -q "$pid/java"; then
-        exit 0
-      fi
-      tries=$((tries + 1))
-      sleep 1
-    done
-  fi
-  exit 1
+  /usr/libexec/kafka/check-running "$pid"
+  exit $?
 end script

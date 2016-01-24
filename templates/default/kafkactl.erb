@@ -1,0 +1,35 @@
+#!/bin/bash
+
+declare -i pid
+
+function check-running() {
+  local try=0 max_tries=5
+  while [ $try -le $max_tries ]; do
+    if netstat --numeric --listen --programs --tcp 2> /dev/null | grep -q "$pid/java"; then
+      exit 0
+    fi
+    tries=$((tries + 1))
+    sleep 1
+  done
+  exit 1
+}
+
+function wait-for-stop() {
+  while ps "$pid" > /dev/null 2>&1; do
+    sleep 1
+  done
+  exit 0
+}
+
+case "$1" in
+  check)
+    check-running
+    ;;
+  wait)
+    wait-for-stop
+    ;;
+  *)
+    echo "Usage: $0 {check|wait}" >&2
+    exit 1
+    ;;
+esac

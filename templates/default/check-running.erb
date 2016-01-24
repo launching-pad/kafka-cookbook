@@ -1,0 +1,15 @@
+#!/bin/bash
+
+declare -r max_tries=5
+declare tries
+declare pid
+pid=$1
+
+while [ $tries -le $max_tries ]; do
+  if netstat --numeric --listen --programs --tcp 2> /dev/null | grep -q '$pid/java'; then
+    exit 0
+  fi
+  tries=$((tries + 1))
+  sleep 1
+done
+exit 1
