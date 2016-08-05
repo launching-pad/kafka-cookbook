@@ -7,6 +7,7 @@ cookbook 'apache_hadoop', github: "hopshadoop/apache-hadoop-chef", branch: "mast
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
 cookbook 'java', '~> 1.39.0'
 cookbook 'scala', '~> 2.1.0'
+cookbook 'apt', '~> 2.6.0'
 
 cookbook 'kzookeeper', github: 'hopshadoop/kzookeeper', branch: 'master'
 
